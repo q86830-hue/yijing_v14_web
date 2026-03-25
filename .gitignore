@@ -111,7 +111,6 @@ venv.bak/
 Thumbs.db
 
 # WASM build output
-yijing_wasm/pkg/
 yijing_wasm/target/
 
 # Logs
