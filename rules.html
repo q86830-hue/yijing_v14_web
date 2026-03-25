@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>规则说明 - 易经V14推理引擎</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Microsoft YaHei','SimSun',serif;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);min-height:100vh;color:#e8e8e8;padding:20px}
+        .container{max-width:900px;margin:0 auto}
+        h1{text-align:center;font-size:2em;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,0.5);margin-bottom:30px;padding:20px}
+        h2{color:#ffd700;font-size:1.3em;margin:25px 0 15px;padding-bottom:8px;border-bottom:1px solid rgba(255,215,0,0.2)}
+        h3{color:#ff8c00;font-size:1.1em;margin:15px 0 10px}
+        .card{background:rgba(255,255,255,0.03);border-radius:15px;padding:25px;margin-bottom:20px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+        .back-link{display:inline-block;margin-bottom:20px;color:#ffd700;text-decoration:none;font-size:0.95em}
+        .back-link:hover{text-decoration:underline}
+        .formula{background:rgba(0,0,0,0.4);padding:12px 18px;border-radius:8px;margin:10px 0;font-family:Consolas,'Courier New',monospace;color:#8bc34a;border-left:3px solid #ffd700}
+        .formula code{color:#fff}
+        .table-rules{width:100%;border-collapse:collapse;margin:15px 0}
+        .table-rules th{background:rgba(255,215,0,0.1);color:#ffd700;padding:10px;text-align:left;border-bottom:1px solid rgba(255,215,0,0.2)}
+        .table-rules td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05);color:#ccc}
+        .table-rules tr:hover{background:rgba(255,255,255,0.02)}
+        .note{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);padding:15px;border-radius:8px;margin:15px 0;color:#ddd}
+        .note-title{color:#ffd700;font-weight:bold;margin-bottom:8px}
+        .wuxing-cycle{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+        .wuxing-item{background:rgba(255,255,255,0.05);padding:8px 15px;border-radius:20px;border:1px solid rgba(255,255,255,0.1)}
+        .sheng{color:#4caf50}
+        .ke{color:#f44336}
+        .footer{text-align:center;margin-top:30px;color:#555;font-size:0.85em}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← 返回占卜页面</a>
+
+        <h1>📜 V14推理引擎规则说明</h1>
+
+        <div class="card">
+            <h2>一、核心定位</h2>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                V14是一个<strong style="color:#ffd700">可解释推理引擎</strong>，而非传统占卜工具。
+                引擎基于内部定义的规则库进行推理，该规则库综合自传统易经典籍及迭代训练中确定的规则。
+                测试集由规则库自动生成，因此引擎输出与规则预设完全一致（100%内部一致性）。
+            </p>
+            <div class="note">
+                <div class="note-title">⚠️ 重要说明</div>
+                若与特定占卜网站或易学流派结果存在差异，属于<strong>规则定义差异</strong>，而非引擎错误。
+                V14的核心价值在于提供<strong>可解释、可组合、可验证的推理过程</strong>。
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>二、起卦规则</h2>
+
+            <h3>1. 输入映射</h3>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                用户输入任意文本（数字、生日、电话等），引擎使用哈希函数映射到六十四卦。
+            </p>
+            <div class="formula">
+                <code>hash(input) mod 64 → 卦象索引(0-63)</code>
+            </div>
+
+            <h3>2. 动爻规则</h3>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                变爻位置由卦象索引决定，确保确定性。
+            </p>
+            <div class="formula">
+                <code>动爻位置 = 卦象索引 mod 6</code>
+            </div>
+
+            <h3>3. 变卦计算</h3>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                将指定爻位阴阳反转（阳→阴，阴→阳），得到变卦。
+            </p>
+            <div class="formula">
+                <code>变卦 = change_gua(原卦索引, 动爻位置)</code>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>三、世应规则（京房八宫体系）</h2>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                世应位置依据京房八宫卦世应排法，每卦均有固定的世应位置。
+            </p>
+
+            <table class="table-rules">
+                <tr><th>卦的类型</th><th>世位置</th><th>应位置</th></tr>
+                <tr><td>本宫卦</td><td>上爻(5)</td><td>三爻(3)</td></tr>
+                <tr><td>一世卦</td><td>初爻(0)</td><td>三爻(3)</td></tr>
+                <tr><td>二世卦</td><td>二爻(1)</td><td>四爻(4)</td></tr>
+                <tr><td>三世卦</td><td>三爻(2)</td><td>五爻(5)</td></tr>
+                <tr><td>四世卦</td><td>四爻(3)</td><td>上爻(5)</td></tr>
+                <tr><td>五世卦</td><td>五爻(4)</td><td>初爻(0)</td></tr>
+                <tr><td>游魂卦</td><td>四爻(3)</td><td>初爻(0)</td></tr>
+                <tr><td>归魂卦</td><td>五爻(4)</td><td>二爻(1)</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>四、六亲规则</h2>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                六亲依据卦宫五行与爻位五行生克关系确定。
+            </p>
+
+            <table class="table-rules">
+                <tr><th>关系</th><th>说明</th><th>六亲</th></tr>
+                <tr><td>爻五行 = 卦宫五行</td><td>同我者</td><td>兄弟</td></tr>
+                <tr><td>爻五行 = 生卦宫五行</td><td>生我者</td><td>父母</td></tr>
+                <tr><td>爻五行 = 卦宫所生</td><td>我生者</td><td>子孙</td></tr>
+                <tr><td>爻五行 = 卦宫所克</td><td>克我者</td><td>官鬼</td></tr>
+                <tr><td>爻五行 = 卦宫所不胜</td><td>我克者</td><td>妻财</td></tr>
+            </table>
+
+            <div class="formula">
+                <code>六亲 = f(卦宫五行, 爻位五行)</code>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>五、吉凶判断规则</h2>
+
+            <h3>1. 五行相生</h3>
+            <div class="wuxing-cycle">
+                <span class="wuxing-item">金<span class="sheng">→水</span></span>
+                <span class="wuxing-item">水<span class="sheng">→木</span></span>
+                <span class="wuxing-item">木<span class="sheng">→火</span></span>
+                <span class="wuxing-item">火<span class="sheng">→土</span></span>
+                <span class="wuxing-item">土<span class="sheng">→金</span></span>
+            </div>
+
+            <h3>2. 五行相克</h3>
+            <div class="wuxing-cycle">
+                <span class="wuxing-item">金<span class="ke">→木</span></span>
+                <span class="wuxing-item">木<span class="ke">→土</span></span>
+                <span class="wuxing-item">土<span class="ke">→水</span></span>
+                <span class="wuxing-item">水<span class="ke">→火</span></span>
+                <span class="wuxing-item">火<span class="ke">→金</span></span>
+            </div>
+
+            <h3>3. 吉凶判定</h3>
+            <table class="table-rules">
+                <tr><th>条件</th><th>结果</th></tr>
+                <tr><td>变卦五行 = 本卦所生</td><td><strong style="color:#4caf50">吉</strong>（进神）</td></tr>
+                <tr><td>变卦五行 = 本卦所克</td><td><strong style="color:#f44336">凶</strong>（退神）</td></tr>
+                <tr><td>变卦五行 = 本卦五行</td><td><strong style="color:#ff9800">平</strong>（比和）</td></tr>
+            </table>
+
+            <div class="formula">
+                <code>吉凶 = judge(本卦五行, 变卦五行)</code>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>六、卦象组成</h2>
+
+            <h3>1. 六爻排法</h3>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                六爻由上卦（下三爻）和下卦（上三爻）组成。
+            </p>
+            <div class="formula">
+                <code>上卦 = BAGUA[卦索引 / 8]<br>下卦 = BAGUA[卦索引 % 8]</code>
+            </div>
+
+            <h3>2. 六神固定排法</h3>
+            <table class="table-rules">
+                <tr><th>爻位</th><th>六神</th></tr>
+                <tr><td>初爻</td><td>青龙</td></tr>
+                <tr><td>二爻</td><td>玄武</td></tr>
+                <tr><td>三爻</td><td>白虎</td></tr>
+                <tr><td>四爻</td><td>螣蛇</td></tr>
+                <tr><td>五爻</td><td>勾陈</td></tr>
+                <tr><td>上爻</td><td>朱雀</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>七、确定性保证</h2>
+            <p style="color:#ccc;line-height:1.8;margin:10px 0">
+                V14引擎是<strong style="color:#ffd700">确定性</strong>的，相同输入必然产生相同输出。
+            </p>
+            <div class="note">
+                <div class="note-title">✓ 确定性设计</div>
+                <ul style="color:#ccc;line-height:2;margin:10px 0 0 20px">
+                    <li>不依赖时间戳</li>
+                    <li>不使用随机数</li>
+                    <li>所有规则均为纯函数</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>易经V14推理引擎 | 可解释·可组合·可验证</p>
+            <p>仅供学术研究 | 切勿迷信</p>
+        </div>
+    </div>
+</body>
+</html>

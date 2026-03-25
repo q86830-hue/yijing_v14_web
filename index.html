@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>易经数字占卜 V14</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Microsoft YaHei','SimSun',serif;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);min-height:100vh;color:#e8e8e8;padding:20px}
+        .container{max-width:950px;margin:0 auto}
+        h1{text-align:center;font-size:2.5em;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,0.5);margin-bottom:30px;padding:20px}
+        h1 span{color:#ff6b6b}
+        .card{background:rgba(255,255,255,0.03);border-radius:15px;padding:25px;margin-bottom:20px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+        .card h2{color:#ffd700;font-size:1.3em;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid rgba(255,215,0,0.2)}
+        .input-group{margin-bottom:20px}
+        .input-group label{display:block;color:#aaa;margin-bottom:10px;font-size:1em}
+        .number-input{width:100%;padding:20px;border-radius:10px;border:2px solid rgba(255,215,0,0.3);background:rgba(0,0,0,0.3);color:#fff;font-size:1.5em;text-align:center;letter-spacing:5px;transition:all 0.3s}
+        .number-input:focus{outline:none;border-color:#ffd700;box-shadow:0 0 20px rgba(255,215,0,0.3)}
+        .btn{width:100%;padding:18px;border-radius:10px;border:none;background:linear-gradient(135deg,#ffd700 0%,#ff8c00 100%);color:#1a1a2e;font-size:1.2em;font-weight:bold;cursor:pointer;transition:all 0.3s;text-transform:uppercase;letter-spacing:3px}
+        .btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(255,215,0,0.5)}
+        .result{display:none;animation:fadeIn 0.6s ease}
+        .result.show{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        .gua-section{display:flex;gap:30px;margin-bottom:25px}
+        .gua-box{flex:1;background:rgba(0,0,0,0.4);border-radius:15px;padding:20px;text-align:center}
+        .gua-box h3{color:#888;font-size:1em;margin-bottom:10px}
+        .gua-title{font-size:1.8em;color:#ffd700;margin-bottom:8px}
+        .gua-sub{font-size:0.9em;color:#666;margin-bottom:15px}
+        .yao-table{width:100%;border-collapse:collapse;margin-top:10px}
+        .yao-table th{background:rgba(255,215,0,0.1);color:#ffd700;padding:8px 5px;font-size:0.8em;font-weight:normal;border-bottom:1px solid rgba(255,215,0,0.2)}
+        .yao-table td{padding:8px 5px;text-align:center;font-size:0.85em;color:#ccc;border-bottom:1px solid rgba(255,255,255,0.05)}
+        .yao-table tr:hover{background:rgba(255,255,255,0.02)}
+        .shi{color:#ff6b6b;font-weight:bold}
+        .ying{color:#4caf50}
+        .dong{color:#ffd700}
+        .jing{color:#888}
+        .result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:20px}
+        .result-item{background:rgba(255,255,255,0.05);padding:15px;border-radius:10px;border-left:3px solid #ffd700}
+        .result-item label{color:#888;font-size:0.8em;margin-bottom:5px;display:block}
+        .result-item .value{color:#fff;font-size:1.1em;font-weight:bold}
+        .yao-divination{background:linear-gradient(135deg,rgba(255,215,0,0.08) 0%,rgba(255,140,0,0.08) 100%);padding:25px;border-radius:12px;text-align:center;margin-top:20px;border:1px solid rgba(255,215,0,0.2)}
+        .yao-title{color:#ffd700;font-size:1.2em;margin-bottom:15px}
+        .yao-text{color:#fff;font-size:1.3em;line-height:1.8}
+        .auspicious{color:#4caf50}
+        .inauspicious{color:#f44336}
+        .neutral{color:#ff9800}
+        .loading{text-align:center;padding:40px;display:none}
+        .loading.show{display:block}
+        .spinner{border:3px solid rgba(255,215,0,0.2);border-top:3px solid #ffd700;border-radius:50%;width:50px;height:50px;animation:spin 1s linear infinite;margin:0 auto}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .footer{text-align:center;margin-top:30px;color:#555;font-size:0.85em}
+        .security-note{background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.3);padding:15px;border-radius:8px;margin-top:15px;font-size:0.9em;color:#888;text-align:center}
+        @media(max-width:768px){.gua-section{flex-direction:column}.result-grid{grid-template-columns:repeat(2,1fr)}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span>易经</span>数字占卜 V14</h1>
+
+        <div class="card">
+            <h2>🔮 数字起卦</h2>
+            <div class="input-group">
+                <label>请输入任意数字（生日、电话、随机数字均可）</label>
+                <input type="text" class="number-input" id="numberInput" placeholder="输入数字..." maxlength="20">
+            </div>
+            <button class="btn" id="divineBtn" onclick="startDivination()">开始占卜</button>
+            <div class="security-note">
+                ⚠️ 本系统基于V14推理引擎，核心算法已编译为WebAssembly保护<br>
+                <a href="rules.html" style="color:#ffd700;">📜 规则说明</a>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top:15px;color:#ffd700;">加载推理引擎...</p>
+        </div>
+
+        <div class="result" id="result">
+            <div class="card">
+                <h2>📿 占卜结果</h2>
+                <div class="gua-section">
+                    <div class="gua-box">
+                        <h3>本卦</h3>
+                        <div class="gua-title" id="guaName"></div>
+                        <div class="gua-sub" id="guaSub"></div>
+                        <table class="yao-table" id="originalTable">
+                            <thead><tr><th>爻位</th><th>世应</th><th>六亲</th><th>六神</th><th>动/静</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="gua-box">
+                        <h3>变卦</h3>
+                        <div class="gua-title" id="newGuaName"></div>
+                        <div class="gua-sub" id="newGuaSub"></div>
+                        <table class="yao-table" id="changedTable">
+                            <thead><tr><th>爻位</th><th>世应</th><th>六亲</th><th>六神</th><th>动/静</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <label>所属宫位</label>
+                        <div class="value" id="palace"></div>
+                    </div>
+                    <div class="result-item">
+                        <label>五行属性</label>
+                        <div class="value" id="wuxing"></div>
+                    </div>
+                    <div class="result-item">
+                        <label>变爻位置</label>
+                        <div class="value" id="changeYao"></div>
+                    </div>
+                    <div class="result-item">
+                        <label>吉凶判定</label>
+                        <div class="value" id="auspicious"></div>
+                    </div>
+                </div>
+                <div class="yao-divination">
+                    <div class="yao-title">📜 爻辞启示</div>
+                    <div class="yao-text" id="yaoText"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>易经V14推理引擎 | <a href="rules.html" style="color:#ffd700;">规则说明</a></p>
+            <p>确定性推理·可解释·可组合·可验证</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import init, { divine } from './yijing_wasm/pkg/yijing_wasm.js';
+
+        let wasmReady = false;
+
+        async function loadWasm() {
+            try {
+                document.getElementById('loading').classList.add('show');
+                await init();
+                wasmReady = true;
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('divineBtn').disabled = false;
+            } catch (e) {
+                console.error('WASM加载失败:', e);
+                document.getElementById('loading').querySelector('p').textContent = '加载失败，请刷新重试';
+            }
+        }
+
+        window.startDivination = function() {
+            if (!wasmReady) {
+                alert('推理引擎正在加载中，请稍候...');
+                return;
+            }
+
+            const input = document.getElementById('numberInput').value.trim() || String(Date.now());
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('loading').querySelector('p').textContent = '推理中...';
+            document.getElementById('result').classList.remove('show');
+
+            setTimeout(() => {
+                try {
+                    const resultJson = divine(input);
+                    const data = JSON.parse(resultJson);
+
+                    document.getElementById('guaName').textContent = data.gua_name + '卦';
+                    document.getElementById('newGuaName').textContent = data.new_gua + '卦';
+                    document.getElementById('guaSub').textContent = data.palace + ' ' + data.wuxing + '行 第' + (data.gua_index + 1) + '卦';
+                    document.getElementById('newGuaSub').textContent = data.new_palace + ' ' + data.new_wuxing + '行 第' + (data.new_gua_index + 1) + '卦';
+
+                    const originalTableBody = document.querySelector('#originalTable tbody');
+                    originalTableBody.innerHTML = '';
+                    data.yao_list.forEach((yao, i) => {
+                        const tr = document.createElement('tr');
+                        const isShi = yao.shi_ying === '世';
+                        const isYing = yao.shi_ying === '应';
+                        tr.innerHTML = `<td>${yao.yao_name}</td>
+                            <td class="${isShi ? 'shi' : isYing ? 'ying' : ''}">${yao.shi_ying}</td>
+                            <td>${yao.liu_qin}</td>
+                            <td>${yao.liu_sheng}</td>
+                            <td class="${yao.dong_jing === '动' ? 'dong' : 'jing'}">${yao.dong_jing}</td>`;
+                        originalTableBody.appendChild(tr);
+                    });
+
+                    const changedTableBody = document.querySelector('#changedTable tbody');
+                    changedTableBody.innerHTML = '';
+                    data.new_yao_list.forEach((yao, i) => {
+                        const tr = document.createElement('tr');
+                        const isShi = yao.shi_ying === '世';
+                        const isYing = yao.shi_ying === '应';
+                        tr.innerHTML = `<td>${yao.yao_name}</td>
+                            <td class="${isShi ? 'shi' : isYing ? 'ying' : ''}">${yao.shi_ying}</td>
+                            <td>${yao.liu_qin}</td>
+                            <td>${yao.liu_sheng}</td>
+                            <td class="${yao.dong_jing === '动' ? 'dong' : 'jing'}">${yao.dong_jing}</td>`;
+                        changedTableBody.appendChild(tr);
+                    });
+
+                    document.getElementById('palace').textContent = data.palace;
+                    document.getElementById('wuxing').textContent = data.wuxing;
+                    document.getElementById('changeYao').textContent = data.change_yao_name;
+
+                    const ausEl = document.getElementById('auspicious');
+                    ausEl.textContent = data.auspicious;
+                    ausEl.className = 'value ' + (data.auspicious === '吉' ? 'auspicious' : data.auspicious === '凶' ? 'inauspicious' : 'neutral');
+
+                    document.getElementById('yaoText').textContent = data.yao_text;
+
+                    document.getElementById('loading').querySelector('p').textContent = '推理中...';
+                    document.getElementById('loading').classList.remove('show');
+                    document.getElementById('result').classList.add('show');
+                } catch (e) {
+                    console.error('推理错误:', e);
+                    document.getElementById('loading').querySelector('p').textContent = '推理出错，请重试';
+                }
+            }, 100);
+        };
+
+        loadWasm();
+    </script>
+</body>
+</html>
