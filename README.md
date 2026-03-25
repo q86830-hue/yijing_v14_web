@@ -18,22 +18,26 @@ yijing_v14_web/
 ├── index.html              # 主界面
 ├── rules.html              # 规则说明文档
 ├── LICENSE                 # 开源许可证
-├── README.md              # 项目说明
+├── README.md               # 项目说明
 ├── CONTRIBUTING.md         # 贡献指南
-├── .gitignore
-└── yijing_wasm/           # 核心引擎（Rust）
-    ├── src/
-    │   └── lib.rs         # 核心推理逻辑
-    ├── Cargo.toml          # Rust项目配置
-    └── pkg/               # 编译输出（WebAssembly二进制）
+└── .gitignore
 ```
+
+## 核心引擎
+
+核心推理引擎以预编译二进制形式提供。
+
+如需获取核心引擎，请联系：
+- 邮箱: spring60@vip.qq.com
+- 说明用途后获取二进制文件
 
 ## 快速开始
 
 ### 使用预编译版本
 
 1. 克隆仓库
-2. 使用任意HTTP服务器打开 `index.html`
+2. 联系邮箱获取核心引擎二进制文件，放入 `yijing_wasm/pkg/` 目录
+3. 使用任意HTTP服务器打开 `index.html`
 
 ```bash
 python -m http.server 8080
@@ -41,14 +45,9 @@ python -m http.server 8080
 
 访问 <http://localhost:8080/> 即可使用。
 
-### 从源码编译
+### 关于核心引擎
 
-需要安装 [wasm-pack](https://rustwasm.github.io/wasm-pack/)
-
-```bash
-cd yijing_wasm
-wasm-pack build --target web
-```
+核心推理引擎采用 **二进制分发** 模式，源码不公开。如需使用或研究核心算法，请通过上述联系方式申请获取预编译版本。
 
 ## 规则说明
 
